@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Http\Controllers\Users;
+
+use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Transaction;
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Application;
+use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Auth;
+use mysql_xdevapi\CollectionModify;
+
+class UserController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): Factory|View|Application
+    {
+        return view('user.index');
+    }
+
+    public function orders(): Factory|View|Application
+    {
+        $orders = Order::where('user_id', Auth::user()->id)
+            -> orderBy('created_at', 'desc')
+            -> paginate(10);
+
+        return view('user.orders', compact('orders'));
+    }
+
+    public function order_details($id): Application|View|Factory|RedirectResponse
+    {
+        $order = Order::where('user_id', Auth::user()->id)
+            -> where('id', $id)
+            -> first();
+        if($order)
+        {
+            $orderItems = OrderItem::where('order_id', $order->id)
+                -> orderBy('id', 'desc')
+                -> paginate(10);
+            $transaction = Transaction::where('user_id', Auth::user()->id)
+                -> first();
+
+            return view('user.order-details', compact('order', 'orderItems', 'transaction'));
+        }
+        else
+            return redirect()->route('login');
+    }
+
+    public function order_cancel(Request $request): RedirectResponse
+    {
+        $order = Order::find($request->order_id);
+        $order->status = 'canceled';
+        $order->canceled_date = Carbon::now();
+        $order
+            -> save();
+        return back()->with('success', 'Order canceled successfully!');
+    }
+}
