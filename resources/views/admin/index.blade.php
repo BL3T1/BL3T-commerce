@@ -124,6 +124,10 @@
                 </div>
 
                 <div class="wg-box">
+
+
+
+
                     <div class="flex items-center justify-between">
                         <h5>Earnings revenue</h5>
                         <div class="dropdown default">
@@ -142,6 +146,9 @@
                             </ul>
                         </div>
                     </div>
+
+
+
                     <div class="flex flex-wrap gap40">
                         <div>
                             <div class="mb-2">
@@ -174,6 +181,9 @@
                             </div>
                         </div>
                     </div>
+
+
+
                     <div id="line-chart-8"></div>
                 </div>
 
@@ -282,3 +292,55 @@
         </div>
     </div>
 @endsection
+
+{{--@push('scripts')--}}
+{{--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>--}}
+{{--    <script>--}}
+{{--        // Function to update chart data--}}
+{{--        function updateChartData(period) {--}}
+{{--            // Fetch data for the selected period--}}
+{{--            fetch('/admin/earnings-data?period=' + period)--}}
+{{--                .then(response => response.json())--}}
+{{--                .then(data => {--}}
+{{--                    // Update chart data--}}
+{{--                    myChart.data.datasets[0].data = data.revenue;--}}
+{{--                    myChart.data.labels = data.dates;--}}
+{{--                    myChart.update();--}}
+{{--                });--}}
+{{--        }--}}
+
+{{--        // Initialize chart--}}
+{{--        const ctx = document.getElementById('line-chart-8').getContext('2d');--}}
+{{--        const myChart = new Chart(ctx, {--}}
+{{--            type: 'line',--}}
+{{--            data: {--}}
+{{--                labels: [], // Will be populated with dates--}}
+{{--                datasets: [{--}}
+{{--                    label: 'Earnings Revenue',--}}
+{{--                    data: [], // Will be populated with revenue data--}}
+{{--                    backgroundColor: 'rgba(255, 99, 132, 0.2)',--}}
+{{--                    borderColor: 'rgba(255, 99, 132, 1)',--}}
+{{--                    borderWidth: 1--}}
+{{--                }]--}}
+{{--            },--}}
+{{--            options: {--}}
+{{--                scales: {--}}
+{{--                    y: {--}}
+{{--                        beginAtZero: true--}}
+{{--                    }--}}
+{{--                }--}}
+{{--            }--}}
+{{--        });--}}
+
+{{--        // Update chart with initial data--}}
+{{--        updateChartData('this_week');--}}
+
+{{--        // Handle dropdown selection--}}
+{{--        document.querySelector('.dropdown-menu').addEventListener('click', function(event) {--}}
+{{--            if (event.target.tagName === 'A') {--}}
+{{--                const period = event.target.textContent.toLowerCase().replace(/\s+/g, '_');--}}
+{{--                updateChartData(period);--}}
+{{--            }--}}
+{{--        });--}}
+{{--    </script>--}}
+{{--@endpush--}}

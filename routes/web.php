@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
-
 Route::controller(ShopController::class)
     -> group(function (){
         Route::get('/shop', 'index')->name('shop.index');
@@ -51,6 +49,7 @@ Route::controller(UserController::class)
         Route::get('/account-orders', 'orders')->name('user.orders');
         Route::get('/account-order/{id}', 'order_details')->name('user.order.details');
         Route::put('/account-order/cancel-order', 'order_cancel')->name('user.order.cancel');
+        Route::get('/categoy/{id}', 'category')->name('user.category');
     });
 
 Route::middleware(['auth', Admin::class])
@@ -102,10 +101,17 @@ Route::middleware(['auth', Admin::class])
         // Order
         Route::get('/admin/orders', 'orders')->name('admin.orders');
         Route::get('/admin/order/{id}/details', 'order_details')->name('admin.order.details');
-        Route::put('/admin/order/update-status', 'update_order_stauts')->name('admin.order.status.update');
+        // Data
+        Route::get('/admin/earning-data', 'get_earning_data')->name('admin.earning.data');
+        Route::put('/admin/order/update-status', 'update_order_status')->name('admin.order.status.update');
     });
 
 Route::middleware(['auth'])
+    -> controller(HomeController::class)
     -> group(function (){
-        Route::get('/res', [HomeController::class, 'nice']);
+        Route::get('/', 'index')->name('home.index');
+        Route::get('/new-arrival', 'new_arrival')->name('home.new.arrival');
+
+
+        Route::get('/res', 'nice');
     });

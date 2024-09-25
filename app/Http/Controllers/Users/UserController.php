@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Transaction;
@@ -13,7 +14,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Contracts\View\View;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Auth;
-use mysql_xdevapi\CollectionModify;
 
 class UserController extends Controller
 {
@@ -61,5 +61,12 @@ class UserController extends Controller
         $order
             -> save();
         return back()->with('success', 'Order canceled successfully!');
+    }
+
+    public function category($id): Factory|View|Application
+    {
+        $categroy = Category::find($id);
+
+        return view('user.category', compact('categroy'));
     }
 }

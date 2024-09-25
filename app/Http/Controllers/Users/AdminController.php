@@ -39,7 +39,17 @@ class AdminController extends Controller
         $ordered_sum = Order::where('status', 'ordered')
             -> sum('total');
 
-        return view('admin.index', compact('orders', 'delivered_sum', 'canceled_sum', 'ordered_sum'));
+        // Fetching the last 7 days of order revenue
+        $orders_chart = Order::selectRaw('DATE(created_at) as date, SUM(total) as total')
+            ->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()])
+            ->groupBy('date')
+            ->get();
+
+        // Prepare data for chart.js
+        $labels = $orders_chart->pluck('date');   // Extracting the dates
+        $data = $orders_chart->pluck('total');
+
+        return view('admin.index', compact('orders', 'delivered_sum', 'canceled_sum', 'ordered_sum', 'labels', 'data'));
     }
 
 
@@ -346,7 +356,7 @@ class AdminController extends Controller
         return view('admin.product-edit', compact('product', 'categories', 'brands'));
     }
 
-    public function product_update(Request $request)
+    public function product_update(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required',
@@ -479,7 +489,7 @@ class AdminController extends Controller
         return view('admin.warehouse-edit', compact('warehouse'));
     }
 
-    public function warehouse_update(Request $request)
+    public function warehouse_update(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required',
@@ -690,7 +700,7 @@ class AdminController extends Controller
         return view('admin.order-details', compact('order', 'orderItems', 'transaction'));
     }
 
-    public function update_order_stauts(Request $request): RedirectResponse
+    public function update_order_status(Request $request): RedirectResponse
     {
         $order = Order::find($request->order_id);
         $order->status = $request->order_status;
@@ -705,13 +715,36 @@ class AdminController extends Controller
             $transaction
                 -> save();
         }
-        elseif($request->order_status == 'caneled')
+        elseif($request->order_status == 'canceled')
             $order->canceled_date = Carbon::now();
 
         $order
             -> save();
 
         return back()->with('success', 'Status changes successfully!');
+    }
+
+
+    ////////////         {-- Earning --}}          ///////////////////
+    public function get_earning_data(Request $request)
+    {
+        $period = $request->query('period');
+
+        // Fetch data based on the period
+        // This is a placeholder, you'll need to implement the actual data fetching logic
+        $data = [
+            'this_week' => [
+                'dates' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                'revenue' => [1000, 1200, 1500, 1800, 2000, 2200, 2500]
+            ],
+            'last_week' => [
+                'dates' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                'revenue' => [900, 1100, 1400, 1700, 1900, 2100, 2400]
+            ]
+            // Add more periods as needed
+        ];
+
+        return response()->json($data[$period] ?? []);
     }
 
 

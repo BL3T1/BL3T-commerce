@@ -360,7 +360,7 @@
                             <a href="#" class="footer__social-link d-block">
                                 <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13"
                                     xmlns="http://www.w3.org/2000/svg">
-                                    <use href="#icon_instagram" />
+                                    <use href="#icon_instagram"/>
                                 </svg>
                             </a>
                         </li>
@@ -386,7 +386,6 @@
             </nav>
         </div>
 
-
         <header id="header" class="header header-fullwidth header-transparent-bg">
             <div class="container">
                 <div class="header-desk header-desk_type_1">
@@ -408,10 +407,10 @@
                                 <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
                             </li>
                             <li class="navigation__item">
-                                <a href="about.html" class="navigation__link">About</a>
+                                <a href="#" class="navigation__link">About</a>
                             </li>
                             <li class="navigation__item">
-                                <a href="contact.html" class="navigation__link">Contact</a>
+                                <a href="#" class="navigation__link">Contact</a>
                             </li>
                         </ul>
                     </nav>
@@ -447,7 +446,7 @@
                                         <div class="sub-menu search-suggestion">
                                             <h6 class="sub-menu__title fs-base">Quicklinks</h6>
                                             <ul class="sub-menu__list list-unstyled">
-                                                <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">New Arrivals</a>
+                                                <li class="sub-menu__item"><a href="{{ route('home.new.arrival') }}" class="menu-link menu-link_us-s">New Arrivals</a>
                                                 </li>
                                                 <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Dresses</a></li>
                                                 <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a>
@@ -460,7 +459,7 @@
                                         <div class="search-result row row-cols-5"></div>
                                     </div>
                                 </form>
-                            </div>
+                            </div>  <!-- Search -->
                         </div>
 
                         @guest
@@ -584,7 +583,7 @@
                     <div class="footer-column footer-menu mb-4 mb-lg-0">
                         <h6 class="sub-menu__title text-uppercase">Shop</h6>
                         <ul class="sub-menu__list list-unstyled">
-                            <li class="sub-menu__item"><a href="shop2.html" class="menu-link menu-link_us-s">New Arrivals</a></li>
+                            <li class="sub-menu__item"><a href="{{ route('home.new.arrival') }}" class="menu-link menu-link_us-s">New Arrivals</a></li>
                             <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a></li>
                             <li class="sub-menu__item"><a href="shop4.html" class="menu-link menu-link_us-s">Men</a></li>
                             <li class="sub-menu__item"><a href="shop5.html" class="menu-link menu-link_us-s">Women</a></li>
@@ -596,7 +595,7 @@
                         <h6 class="sub-menu__title text-uppercase">Help</h6>
                         <ul class="sub-menu__list list-unstyled">
                             <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Customer Service</a></li>
-                            <li class="sub-menu__item"><a href="account_dashboard.html" class="menu-link menu-link_us-s">My Account</a>
+                            <li class="sub-menu__item"><a href="{{ route('user.index') }}" class="menu-link menu-link_us-s">My Account</a>
                             </li>
                             <li class="sub-menu__item"><a href="store_location.html" class="menu-link menu-link_us-s">Find a Store</a>
                             </li>
@@ -608,7 +607,11 @@
                     <div class="footer-column footer-menu mb-4 mb-lg-0">
                         <h6 class="sub-menu__title text-uppercase">Categories</h6>
                         <ul class="sub-menu__list list-unstyled">
-                            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shirts</a></li>
+                            @foreach($home_categories as $category)
+                                <li class="sub-menu__item">
+                                    <a href="{{ route('user.category', ['id' => $category->id]) }}" class="menu-link menu-link_us-s">{{ $category->name }}</a>
+                                </li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>
