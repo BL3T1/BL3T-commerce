@@ -15,7 +15,7 @@ class ViewServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        View::composer('layouts.app', function ($view) {
+        View::composer(['layouts.app', 'layouts.auth'], function ($view) {
             $home_categories = Category::orderBy('created_at', 'desc')
                 -> paginate(5)
                 -> take(5);

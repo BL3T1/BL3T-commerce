@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Contracts\View\View;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
 
@@ -721,7 +723,7 @@ class AdminController extends Controller
         $order
             -> save();
 
-        return back()->with('success', 'Status changes successfully!');
+        return back()->with('status', 'Status changes successfully!');
     }
 
 
@@ -748,10 +750,139 @@ class AdminController extends Controller
     }
 
 
+    ////////////         {-- Users --}}          ///////////////////
+    public function users(): Factory|View|Application
+    {
+        $users = User::orderBy('id', 'desc')
+            -> paginate(10);
 
+        return view('admin.users', compact('users'));
+    }
+
+    public function edit_user($id): Factory|View|Application
+    {
+        $user = User::find($id);
+
+        return view('admin.user-edit', compact('user'));
+    }
+
+    public function user_update(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'role' => 'required'
+        ]);
+
+        $user = User::find($request->id);
+
+        $user->role = $request->role;
+        $user
+            -> save();
+
+        return redirect()->route('admin.users')->with('status', "User $user->name role has been updated successfully!");
+    }
+
+
+    ////////////         {-- Settings --}}          ///////////////////
+    public function settings(): Factory|View|Application
+    {
+        $user = User::find(1);
+
+        return view('admin.settings', compact('user'));
+    }
+
+    public function settings_store(Request $request): RedirectResponse
+    {
+        $user = User::find(1);
+
+        if(isset($request->new_password) && $request->new_password == $request->new_password_confirmation)
+        {
+            if(Hash::check($request->password, $user->password))
+            {
+                $request->validate([
+                    'name' => 'required',
+                    'phone' => 'required',
+                    'email' => 'required',
+                    'old_password' => 'required',
+                    'new_password' => 'required|min:8',
+                    'new_password_confirmation' => 'required|min:8',
+                    'image' => 'mimes:png,jpg,jpeg|max:4096'
+                ]);
+
+                if ($request->hasFile('image'))
+                    if (File::exists(public_path('uploads/avatars').'/'.$user->profile_photo))
+                        File::delete(public_path('uploads/avatars').'/'.$user->profile_photo);
+
+                $image = $request->file('image');
+                $file_extension = $image->extension();
+                $file_name = Carbon::now()->timestamp.'.'.$file_extension;
+                $this->GenerateAvatarThumbnailsImage($image, $file_name);
+
+                $user->update([
+                    'name' => $request->name,
+                    'phone_number' => $request->phone,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->new_password),
+                    'profile_image' => $file_name,
+                ]);
+
+                return back()->with('status', 'Profile has been updated successfully!');
+            }
+            else
+                return back()->with('error', 'Wrong password');
+        }
+        elseif(Hash::check($request->old_password, $user->password))
+        {
+            $request->validate([
+                'name' => 'required',
+                'phone' => 'required',
+                'email' => 'required',
+                'old_password' => 'required',
+                'image' => 'mimes:png,jpg,jpeg|max:4096'
+            ]);
+
+            if ($request->hasFile('image'))
+                if (File::exists(public_path('uploads/avatars').'/'.$user->profile_photo))
+                    File::delete(public_path('uploads/avatars').'/'.$user->profile_photo);
+
+            $image = $request->file('image');
+            $file_extension = $image->extension();
+            $file_name = Carbon::now()->timestamp.'.'.$file_extension;
+            $this->GenerateAvatarThumbnailsImage($image, $file_name);
+
+            $user->update([
+                'name' => $request->name,
+                'phone_number' => $request->phone,
+                'email' => $request->email,
+                'profile_image' => $file_name,
+            ]);
+
+            return back()->with('status', 'Profile has been updated successfully!');
+        }
+        elseif(!Hash::check($request->old_password, $user->password))
+            return back()->with('error', 'Wrong password');
+        else
+            return back()->with('error', 'Passwords did not match!');
+    }
+
+
+    ////////////         {-- Slider --}}          ///////////////////
+    public function slider(): Factory|View|Application
+    {
+        return view('admin.slider');
+    }
 
 
     ////////////         {-- Images --}}          ///////////////////
+    public function GenerateAvatarThumbnailsImage($image, $imageName): void
+    {
+        $destinationPath = public_path('upload/avatars');
+        $img = Image::read($image->path());
+        $img->cover(124, 124, 'top');
+        $img->resize(124, 124, function($constraint){
+            $constraint->aspectRatio();
+        })->save($destinationPath.'/'.$imageName);
+    }
+
     public function GenerateBrandThumbnailsImage($image, $imageName): void
     {
         $destinationPath = public_path('upload/brands');

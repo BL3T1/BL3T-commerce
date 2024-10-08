@@ -60,9 +60,9 @@
                             </div>
                             <div id="upload-file" class="item up-load">
                                 <label class="uploadfile" for="myFile">
-                                                        <span class="icon">
-                                                            <i class="icon-upload-cloud"></i>
-                                                        </span>
+                                    <span class="icon">
+                                        <i class="icon-upload-cloud"></i>
+                                    </span>
                                     <span class="body-text">Drop your images here or select <span
                                             class="tf-color">click to browse</span></span>
                                     <input type="file" id="myFile" name="image" accept="image/*">

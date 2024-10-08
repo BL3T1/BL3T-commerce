@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
@@ -10,15 +12,23 @@ use App\Http\Middleware\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Auth::routes();
+Auth::routes(['verify' => true]);
+
+Route::middleware(['auth', 'verified'])
+    -> group(function (){
+        Route::get('/verify-email', [VerificationController::class, 'verify_email'])->name('auth.verify.email');
+        Route::get('/forget-password', [ForgotPasswordController::class, 'forget_password'])->name('auth.forget.password');
+    });
 
 Route::controller(ShopController::class)
+    -> middleware('verified')
     -> group(function (){
         Route::get('/shop', 'index')->name('shop.index');
         Route::get('/shop/{product_name}', 'product_details')->name('shop.product.details');
     });
 
 Route::controller(CartController::class)
+    -> middleware('verified')
     -> group(function (){
         Route::get('/cart', 'index')->name('cart.index');
         Route::get('/checkout', 'checkout')->name('cart.checkout');
@@ -34,6 +44,7 @@ Route::controller(CartController::class)
     });
 
 Route::controller(WishlistController::class)
+    -> middleware('verified')
     -> group(function (){
         Route::get('/wishlist', 'index')->name('wishlist.index');
         Route::post('/wishlist/add', 'add_to_wishlist')->name('wishlist.add');
@@ -46,13 +57,15 @@ Route::controller(UserController::class)
     -> middleware(['auth'])
     -> group(function (){
         Route::get('/account-dashboard', 'index')->name('user.index');
+        Route::get('/account-details', 'account_details')->name('user.account.details');
         Route::get('/account-orders', 'orders')->name('user.orders');
         Route::get('/account-order/{id}', 'order_details')->name('user.order.details');
         Route::put('/account-order/cancel-order', 'order_cancel')->name('user.order.cancel');
         Route::get('/categoy/{id}', 'category')->name('user.category');
+        Route::put('/account-update', 'user_update')->name('user.update');
     });
 
-Route::middleware(['auth', Admin::class])
+Route::middleware(['auth', Admin::class, 'verified'])
     -> controller(AdminController::class)
     -> group(function (){
         Route::get('/admin', 'index')->name('admin.index');
@@ -101,17 +114,29 @@ Route::middleware(['auth', Admin::class])
         // Order
         Route::get('/admin/orders', 'orders')->name('admin.orders');
         Route::get('/admin/order/{id}/details', 'order_details')->name('admin.order.details');
+        // User
+        Route::get('/admin/users', 'users')->name('admin.users');
+        Route::get('/admin/user/edit/{id}', 'edit_user')->name('admin.user.edit');
+        Route::put('/admin/user/update', 'user_update')->name('admin.user.update');
+        // Settings
+        Route::get('/admin/settings', 'settings')->name('admin.settings');
+        Route::put('/admin/change-settings', 'settings_store')->name('admin.change.settings');
+        // Slider
+        Route::get('/admin/slider', 'slider')->name('admin.slider');
+
         // Data
         Route::get('/admin/earning-data', 'get_earning_data')->name('admin.earning.data');
         Route::put('/admin/order/update-status', 'update_order_status')->name('admin.order.status.update');
     });
 
-Route::middleware(['auth'])
+Route::middleware(['auth', 'verified'])
     -> controller(HomeController::class)
     -> group(function (){
         Route::get('/', 'index')->name('home.index');
         Route::get('/new-arrival', 'new_arrival')->name('home.new.arrival');
-
-
+        Route::get('/terms', 'terms')->name('home.terms');
+        Route::get('/policy', 'policy')->name('home.policy');
+        Route::get('/contact-us', 'contact_info')->name('home.contact.us');
+        Route::get('/about-us', 'about_us')->name('home.about.us');
         Route::get('/res', 'nice');
     });

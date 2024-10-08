@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\View\View;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -19,30 +20,30 @@ class HomeController extends Controller
         $c = __DIR__.'/../config/cart.php';
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return Renderable
-     */
-    public function index(): Renderable
+    public function index(): string
     {
-        $products = Product::orderBy('created_at', 'desc')
-            -> paginate(10)
-            -> take(2);
+        if(Auth::user()->email_verified_at != null)
+        {
+            $products = Product::orderBy('created_at', 'desc')
+                -> paginate(10)
+                -> take(2);
 
-        $featuredProducts = Product::where('is_new_arrival', true)
-            -> where('is_active', false)
-            -> orderBy('created_at', 'desc')
-            -> paginate(8);
+            $featuredProducts = Product::where('is_new_arrival', true)
+                -> where('is_active', false)
+                -> orderBy('created_at', 'desc')
+                -> paginate(8);
 
-        $hotDeals = Product::where('sales_price', ">", 0)
-            -> orderBy('created_at', 'desc')
-            -> paginate(5);
+            $hotDeals = Product::where('sales_price', ">", 0)
+                -> orderBy('created_at', 'desc')
+                -> paginate(5);
 
-        $categories = Category::orderBy('created_at', 'desc')
-            -> paginate(12);
+            $categories = Category::orderBy('created_at', 'desc')
+                -> paginate(12);
 
-        return view('to.index', compact('featuredProducts', 'hotDeals', 'categories', 'products'));
+            return view('to.index', compact('featuredProducts', 'hotDeals', 'categories', 'products'));
+        }
+        else
+            return view('auth.verify');
     }
 
     public function new_arrival(Request $request): Factory|View|Application
@@ -106,8 +107,35 @@ class HomeController extends Controller
         return view('to.new-arrival', compact('products', 'size', 'order', 'brands', 'f_brands', 'categories', 'f_categories', 'min_price', 'max_price'));
     }
 
+    public function terms(): Factory|View|Application
+    {
+        return view('to.terms');
+    }
+
+    public function policy(): Factory|View|Application
+    {
+        return view('to.policy');
+    }
+
+    public function contact_info(): Factory|View|Application
+    {
+        return view('to.contact-info');
+    }
+
+    public function send_message(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+
+        return redirect()->back()->with('success', 'Thanks for contacting us');
+    }
+
+    public function about_us(): Factory|View|Application
+    {
+        return view('to.about-us');
+    }
+
     public function nice()
     {
-
+        return view('welcome');
     }
 }

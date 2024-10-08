@@ -49,8 +49,10 @@
                             </div>
                         </div>
                         <div class="center">
-                            <div class="center-item">
 
+                        </div>
+                        <div class="center">
+                            <div class="center-item">
                             </div>
                         </div>
                         <div class="center">
@@ -178,11 +180,23 @@
                                             </li>
                                         </ul>
                                     </li>
-                                    <li class="menu-item">
-                                        <a href="slider.html" class="">
+                                    <li class="menu-item has-children">
+                                        <a href="javascript:void(0);" class="menu-item-button">
                                             <div class="icon"><i class="icon-image"></i></div>
                                             <div class="text">Slider</div>
                                         </a>
+                                        <ul class="sub-menu">
+                                            <li class="sub-menu-item">
+                                                <a href="#" class="">
+                                                    <div class="text">New Slider</div>
+                                                </a>
+                                            </li>
+                                            <li class="sub-menu-item">
+                                                <a href="{{ route('admin.slider') }}" class="">
+                                                    <div class="text">Sliders</div>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                     <li class="menu-item">
                                         <a href="{{ route('admin.coupons') }}" class="">
@@ -192,14 +206,14 @@
                                     </li>
 
                                     <li class="menu-item">
-                                        <a href="users.html" class="">
+                                        <a href="{{ route('admin.users') }}" class="">
                                             <div class="icon"><i class="icon-user"></i></div>
                                             <div class="text">User</div>
                                         </a>
                                     </li>
 
                                     <li class="menu-item">
-                                        <a href="settings.html" class="">
+                                        <a href="{{ route('admin.settings') }}" class="">
                                             <div class="icon"><i class="icon-settings"></i></div>
                                             <div class="text">Settings</div>
                                         </a>
@@ -440,7 +454,7 @@
                                                     id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <span class="header-user wg-user">
                                                     <span class="image">
-                                                        <img src="{{ asset('images/avatar/user-1.png') }}" alt="">
+                                                        <img src="{{ asset('upload/avatars') }}/{{ Auth::user()->profile_image }}" alt="{{ Auth::user()->name }}">
                                                     </span>
                                                     <span class="flex flex-column">
                                                         <span class="body-title mb-2">{{ Auth::user()->name }}</span>

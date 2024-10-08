@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Application;
+use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\View\Factory;
 
 class VerificationController extends Controller
 {
@@ -37,5 +41,10 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+
+    public function verify_email(): Factory|View|Application
+    {
+        return view('auth.verify');
     }
 }

@@ -319,10 +319,10 @@
                                 <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
                             </li>
                             <li class="navigation__item">
-                                <a href="about.html" class="navigation__link">About</a>
+                                <a href="{{ route('home.about.us') }}" class="navigation__link">About</a>
                             </li>
                             <li class="navigation__item">
-                                <a href="contact.html" class="navigation__link">Contact</a>
+                                <a href="{{ route('home.contact.us') }}" class="navigation__link">Contact</a>
                             </li>
                         </ul>
                     </div>
@@ -341,7 +341,7 @@
 
                     <ul class="container social-links list-unstyled d-flex flex-wrap mb-0">
                         <li>
-                            <a href="#" class="footer__social-link d-block ps-0">
+                            <a href="" class="footer__social-link d-block ps-0">
                                 <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <use href="#icon_facebook" />
@@ -407,10 +407,10 @@
                                 <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
                             </li>
                             <li class="navigation__item">
-                                <a href="#" class="navigation__link">About</a>
+                                <a href="{{ route('home.about.us') }}" class="navigation__link">About</a>
                             </li>
                             <li class="navigation__item">
-                                <a href="#" class="navigation__link">Contact</a>
+                                <a href="{{ route('home.contact.us') }}" class="navigation__link">Contact</a>
                             </li>
                         </ul>
                     </nav>
@@ -446,11 +446,9 @@
                                         <div class="sub-menu search-suggestion">
                                             <h6 class="sub-menu__title fs-base">Quicklinks</h6>
                                             <ul class="sub-menu__list list-unstyled">
-                                                <li class="sub-menu__item"><a href="{{ route('home.new.arrival') }}" class="menu-link menu-link_us-s">New Arrivals</a>
-                                                </li>
+                                                <li class="sub-menu__item"><a href="{{ route('home.new.arrival') }}" class="menu-link menu-link_us-s">New Arrivals</a></li>
                                                 <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Dresses</a></li>
-                                                <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a>
-                                                </li>
+                                                <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a></li>
                                                 <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Footwear</a></li>
                                                 <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Sweatshirt</a></li>
                                             </ul>
@@ -465,6 +463,15 @@
                         @guest
                             <div class="header-tools__item hover-container">
                                 <a href="{{ route('login') }}" class="header-tools__item">
+                                    <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <use href="#icon_user" />
+                                    </svg>
+                                </a>
+                            </div>
+                        @elseif(Auth::user()->email_verified_at == null)
+                            <div class="header-tools__item hover-container">
+                                <a href="{{ route('verification.notice') }}" class="header-tools__item">
                                     <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
                                         <use href="#icon_user" />
@@ -572,11 +579,11 @@
                     <div class="footer-column footer-menu mb-4 mb-lg-0">
                         <h6 class="sub-menu__title text-uppercase">Company</h6>
                         <ul class="sub-menu__list list-unstyled">
-                            <li class="sub-menu__item"><a href="about-2.html" class="menu-link menu-link_us-s">About Us</a></li>
+                            <li class="sub-menu__item"><a href="{{ route('home.about.us') }}" class="menu-link menu-link_us-s">About Us</a></li>
                             <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Careers</a></li>
                             <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Affiliates</a></li>
                             <li class="sub-menu__item"><a href="blog_list1.html" class="menu-link menu-link_us-s">Blog</a></li>
-                            <li class="sub-menu__item"><a href="contact-2.html" class="menu-link menu-link_us-s">Contact Us</a></li>
+                            <li class="sub-menu__item"><a href="{{ route('home.contact.us') }}" class="menu-link menu-link_us-s">Contact Us</a></li>
                         </ul>
                     </div>
 
@@ -584,10 +591,7 @@
                         <h6 class="sub-menu__title text-uppercase">Shop</h6>
                         <ul class="sub-menu__list list-unstyled">
                             <li class="sub-menu__item"><a href="{{ route('home.new.arrival') }}" class="menu-link menu-link_us-s">New Arrivals</a></li>
-                            <li class="sub-menu__item"><a href="shop3.html" class="menu-link menu-link_us-s">Accessories</a></li>
-                            <li class="sub-menu__item"><a href="shop4.html" class="menu-link menu-link_us-s">Men</a></li>
-                            <li class="sub-menu__item"><a href="shop5.html" class="menu-link menu-link_us-s">Women</a></li>
-                            <li class="sub-menu__item"><a href="shop1.html" class="menu-link menu-link_us-s">Shop All</a></li>
+                            <li class="sub-menu__item"><a href="{{ route('shop.index') }}" class="menu-link menu-link_us-s">Shop All</a></li>
                         </ul>
                     </div>
 
@@ -621,7 +625,7 @@
                 <div class="container d-md-flex align-items-center">
                     <span class="footer-copyright me-auto">©2024 BL3T</span>
                     <div class="footer-settings d-md-flex align-items-center">
-                        <a href="privacy-policy.html">Privacy Policy</a> &nbsp;|&nbsp; <a href="terms-conditions.html">Terms &amp;
+                        <a href="{{ route('home.policy') }}">Privacy Policy</a> &nbsp;|&nbsp; <a href="{{ route('home.terms') }}">Terms &amp;
                             Conditions</a>
                     </div>
                 </div>
